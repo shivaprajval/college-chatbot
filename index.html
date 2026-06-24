@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>College FAQ Chatbot</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+    }
+
+    .chat-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .chat-header {
+      background: #0066cc;
+      color: white;
+      padding: 20px;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+
+    .chat-message {
+      margin: 12px 0;
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 15px;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #d0eaff;
+      text-align: right;
+      color: #0066cc;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #eeeeee;
+      text-align: left;
+      color: #333;
+    }
+
+    .input-area {
+      display: flex;
+      border-top: 1px solid #ddd;
+      padding: 15px;
+      background: #fff;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+      font-size: 16px;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 12px 20px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005bb5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-header">College FAQ Chatbot</div>
+  <div class="chat-box" id="chat-box">
+    <div class="chat-message bot"><marquee>Hello! Ask me about admission, courses, fees, campus, or contact info.</marquee></div>
+  </div>
+  <div class="input-area">
+    <input type="text" id="user-input" placeholder="Type your question...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+  const faqDict = {
+    admission: "The admission criteria include a valid entrance exam score and 12th-grade marks. Selection may also involve interviews.",
+    criteria: "The admission criteria include a valid entrance exam score and 12th-grade marks...",
+    campus: "The campus is located at Beedupalli Knowledgepark, Behind SSSIHMS, Puttaparthi, Sri Sathya Sai District, AP - 515134.",
+    location: "The campus is located at Beedupalli Knowledgepark...",
+    located: "The campus is located at Beedupalli Knowledgepark...",
+    courses: "We offer B.Tech in CSE, ECE, EEE, MECH, CIVIL, along with M.Tech, MBA, and BBA programs.",
+    coursesoffered: "We offer B.Tech in CSE, ECE, EEE, MECH, CIVIL, along with M.Tech, MBA, and BBA programs.",
+    fees: "The fee structure varies depending on the course. Please contact the admissions office for detailed info.",
+    fee: "The fee structure varies depending on the course...",
+    contact: "Contact us at enquiry@sseptp.org / hr@sseptp.org or call +91 9100064545 / 74545 (Mon-Sat: 9am to 5pm).",
+    phone: "Contact us at enquiry@sseptp.org / hr@sseptp.org or call +91 9100064545 / 74545.",
+    email: "Contact us at enquiry@sseptp.org / hr@sseptp.org or call +91 9100064545 / 74545.",
+    hostel: "Yes, we provide separate hostel facilities for boys and girls with all basic amenities.",
+    accommodation: "Yes, we provide hostel facilities for boys and girls.",
+    placement: "We have a dedicated placement cell that helps students with internships and jobs.",
+    scholarship: "Scholarships are available for meritorious and economically weaker students.",
+    wifi: "Wi-Fi is available throughout the campus for all students and staff.",
+    ragging: "Ragging is strictly prohibited on campus. We follow anti-ragging policies as per UGC guidelines with strict disciplinary actions.",
+    lab: "Our college has well-equipped labs for all departments including CSE, ECE, MECH, and CIVIL to support practical learning.Our labs are modern and fully equipped for hands-on experiments and projects.",
+    messfood: "The college mess provides hygienic and nutritious food for all hostel students with both North and South Indian menu options.",
+    faculty: "Our faculty members are well-qualified with rich academic and industry experience and are committed to student success.",
+    classrooms: "All classrooms are spacious and equipped with digital boards, projectors, and proper ventilation.",
+    rulesandregulations: "Students are expected to follow college rules and maintain discipline on campus. Ragging, misconduct, and academic dishonesty are strictly prohibited.",
+    timings: "College timings are from 9:00 AM to 4:30 PM, Monday to Saturday. Fridays usually have half-day sessions.",
+    holidays: "College observes all major national holidays. A detailed holiday calendar is provided at the beginning of the academic year.",
+    fest: "The college organizes cultural fests, technical fests, and annual sports meets to encourage student participation.",
+    culturalevents: "The college organizes cultural fests, technical fests, and annual sports meets to encourage student participation.",
+    events: "The college organizes cultural fests, technical fests, and annual sports meets to encourage student participation.",
+    sports: "We have facilities for cricket, volleyball, badminton, and indoor games. Annual sports day is a major event.",
+    digital: "We use digital tools like smart boards, projectors, and learning platforms for interactive classes.our college uses smart classrooms and online platforms to deliver digital learning",
+    workshopsandguestlectures: "Various workshops are conducted regularly to enhance technical and soft skills of students.Industry experts and alumni are invited for guest lectures and knowledge-sharing sessions",
+    library: "Our library has a wide collection of academic books, journals, e-resources, and study materials. It is open from 8 AM to 7 PM.",
+    industrialvisit: "Yes, the college organizes regular industrial visits to provide students with exposure to real-world industry practices and environments.",
+    industrialvisits: "Yes, the college organizes regular industrial visits to provide students with exposure to real-world industry practices and environments.",
+    iv: "Yes, the college organizes regular industrial visits to provide students with exposure to real-world industry practices and environments.",
+    trips: "Educational field trips and industrial visits are arranged periodically as part of experiential learning. These include visits to industries, research labs, and technical expos.",
+    tours: "We conduct educational field trips to enhance practical knowledge in various disciplines.",
+   
+}
+  
+
+  function getResponse(userInput) {
+    userInput = userInput.toLowerCase();
+    for (let keyword in faqDict) {
+      if (userInput.includes(keyword)) {
+        return faqDict[keyword];
+      }
+    }
+    return "Sorry, I didn't understand that. Please ask about admission, courses, campus, or contact info.";
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("user-input");
+    const userText = input.value.trim();
+    if (userText === "") return;
+
+    addMessage(userText, "user");
+    const botResponse = getResponse(userText);
+    setTimeout(() => {
+      addMessage(botResponse, "bot");
+    }, 400);
+
+    input.value = "";
+  }
+
+  function addMessage(text, sender) {
+    const chatBox = document.getElementById("chat-box");
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("chat-message", sender);
+    msgDiv.innerText = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
