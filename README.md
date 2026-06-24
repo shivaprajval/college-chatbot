@@ -94,7 +94,7 @@ A simple rule-based chatbot that answers common college-related questions such a
 
 ## 🧑‍💻 Developer
 
-- **Praneeth** – College Website Chatbot Project
+- **Prajval** – College Website Chatbot Project
 
 ---
 
